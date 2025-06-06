@@ -17,3 +17,8 @@ logging:
   level:
     #root: WARN
     br.com.erudio: DEBUG
+
+spring-doc:
+  path-to-match: /api/**/v1/**
+  swagger-ui:
+    user-root-path: true
