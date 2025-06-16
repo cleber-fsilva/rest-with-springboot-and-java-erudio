@@ -61,15 +61,19 @@ public class PersonController implements PersonControllerDocs {
     @PutMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE},
             produces = {
                     MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
-
     @Override
     public PersonDTO update(@RequestBody PersonDTO person) {
 
         return service.update(person);
+    }
+
+    @PatchMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_YAML_VALUE})
+    @Override
+    public PersonDTO disabledPerson(@PathVariable("id") Long id) {
+        return service.disabledPerson(id);
     };
 
     @DeleteMapping(value = "/{id}")
-
     @Override
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
 

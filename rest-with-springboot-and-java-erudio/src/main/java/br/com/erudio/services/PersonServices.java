@@ -11,6 +11,7 @@ import static br.com.erudio.mapper.ObjectMapper.parseObjects;
 import br.com.erudio.mapper.custom.PersonMapper;
 import br.com.erudio.model.Person;
 import br.com.erudio.repository.PersonRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,22 @@ public class PersonServices {
         return converter.covertEntityToDTO(repository.save(entity));
     };
 
+    @Transactional
+    public PersonDTO disabledPerson(Long id) {
+        logger.info("Disabling one person!");
+
+        repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+        repository.disablePerson(id);
+
+        var entity = repository.findById(id).get();
+
+        var dto = parseObjects(entity, PersonDTO.class);
+        addHateosLinks(dto);
+        return dto;
+
+    };
+
     public void delete(Long id) {
         logger.info("Deleting one person!");
 
@@ -108,6 +125,8 @@ public class PersonServices {
         dto.add(linkTo(methodOn(PersonController.class).create(dto)).withRel("create").withType("POST"));
 
         dto.add(linkTo(methodOn(PersonController.class).update(dto)).withRel("update").withType("PUT"));
+
+        dto.add(linkTo(methodOn(PersonController.class).disabledPerson(dto.getId())).withRel("disabled").withType("PATCH"));
 
         dto.add(linkTo(methodOn(PersonController.class).delete(dto.getId())).withRel("delete").withType("DELETE"));
     };
